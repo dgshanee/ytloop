@@ -80,6 +80,8 @@ void load_video_metadata(RaylibVideo* stream){
   pCodecPar = pFormatCtx->streams[video_stream]->codecpar;
 
   stream->duration = pFormatCtx->duration / (AV_TIME_BASE / 1000);
+
+  // clamp width and height to screen size  
   stream->width = pCodecPar->width;
   stream->height = pCodecPar->height;
 
@@ -345,6 +347,7 @@ int main(int argc, char* argv[]){
   RaylibVideo* stream = load_video(media_path);
 
   InitWindow(stream->width, stream->height, "YouTube Looper");
+  
   SetTargetFPS(60);
   SetExitKey(KEY_NULL);
 
