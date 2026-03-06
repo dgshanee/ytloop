@@ -304,18 +304,17 @@ void check_state(VideoState* state, RaylibVideo* str){
   }
 }
 
+// handles window resizing
 Rectangle get_video_box(RaylibVideo* str){
   int faux_height = str->height;
   int faux_width = str->width;
-  while(WINDOW_HEIGHT > faux_height && WINDOW_WIDTH > faux_width){
-    faux_height /= 2;
-    faux_width /= 2;
-  }
-  
-  Rectangle *new_res = malloc(sizeof(Rectangle));
-  *new_res = (Rectangle) {0, 0, faux_width, faux_height};
 
-  return *new_res;
+  faux_height = WINDOW_HEIGHT;
+  faux_width = WINDOW_WIDTH;
+  
+  Rectangle new_res = (Rectangle) {0, 0, faux_width, faux_height};
+
+  return new_res;
 }
 
 void playback_driver(RaylibVideo* str){
@@ -329,13 +328,21 @@ void playback_driver(RaylibVideo* str){
   char command[MAX_INPUT_CHARS + 1] = ":";
   int letter_count = 1;
 
+  Rectangle video_box = get_video_box(str);
+
   while(!WindowShouldClose()){
     update_raylib(str, ud);
+
+    if(IsWindowResized()){
+      WINDOW_HEIGHT = GetScreenHeight();
+      WINDOW_WIDTH = GetScreenWidth();
+      video_box = get_video_box(str);
+    }
+
     BeginDrawing();
       ClearBackground(BLACK);
 
-      // DrawTexture(str->frame_texture, 0, 0, WHITE);
-      DrawTexturePro(str->frame_texture, (Rectangle){0, 0, str->width, str->height}, get_video_box(str), (Vector2){0, 0}, 0.0, WHITE);
+      DrawTexturePro(str->frame_texture, (Rectangle){0, 0, str->width, str->height}, video_box, (Vector2){0, 0}, 0.0, WHITE);
       check_state(state_machine, str);
       char c = GetCharPressed();
       if(state_machine->command_bar_open == false){
@@ -368,10 +375,8 @@ int main(int argc, char* argv[]){
   init_empty_texture(stream);
   create_gstreamer_pipeline(stream);
 
-  // pthread_t* key_thread = set_keybinds();
   playback_driver(stream);
 
-  // pthread_cancel(*key_thread);
   destroy_stream(&stream);
   printf("Done exiting\n");
 }
