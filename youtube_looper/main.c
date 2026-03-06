@@ -23,13 +23,62 @@
 #include "raylib.h"
 #include <gst/gst.h>
 #include <gst/app/gstappsink.h>
+#include <gst/video/video.h>
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
+
+int WINDOW_HEIGHT;
+int WINDOW_WIDTH;
+
+void write_frame_data(SharedFrame* sf, uint8_t* src, size_t size){
+  pthread_mutex_lock(&sf->mutex);
+  memcpy(sf->data, src, size);
+  pthread_mutex_unlock(&sf->mutex);
+}
+
+static GstFlowReturn on_new_sample(GstAppSink *appsink, gpointer user_data)
+{
+  UserData* ud = (UserData*)user_data;
+  GstPipeline *pipeline = ud->pipeline;
+  assert(pipeline);
+
+  GstSample* sample = gst_app_sink_pull_sample(appsink);
+  assert(sample);
+
+  GstBuffer* buffer = gst_sample_get_buffer(sample);
+  assert(buffer);
+
+  GstMapInfo map;
+  if (!gst_buffer_map(buffer, &map, GST_MAP_READ)) {
+      return GST_FLOW_ERROR;
+  }
+
+  gint64 pos_ns = GST_CLOCK_TIME_NONE;
+
+  if(gst_element_query_position(GST_ELEMENT(pipeline), 
+                                GST_FORMAT_TIME, 
+                                &pos_ns)){
+    volatile gint ts = (gint)ud->ts_ref;
+    g_atomic_int_set(&ts, pos_ns);
+  }
+
+  write_frame_data(ud->frame, map.data, map.size);
+  atomic_store_explicit(&ud->dirty, true, memory_order_relaxed);
+
+  gst_buffer_unmap(buffer, &map);
+  gst_sample_unref(sample);
+  
+  return GST_FLOW_OK;
+}
 
 void destroy_stream(RaylibVideo **pstr){
   RaylibVideo* str = *pstr;
   UnloadTexture(str->frame_texture);
   pthread_mutex_destroy(&str->frame_mut);
+
+  UserData* ud = str->thread_data;
+  g_signal_handlers_disconnect_by_func(ud->appsink, G_CALLBACK(on_new_sample), ud);
+  free(ud);
   
   if(pstr != NULL)
     free(str);
@@ -112,12 +161,6 @@ void read_frame_data(SharedFrame* sf, uint8_t *dst, size_t size){
   pthread_mutex_unlock(&sf->mutex);
 }
 
-void write_frame_data(SharedFrame* sf, uint8_t* src, size_t size){
-  pthread_mutex_lock(&sf->mutex);
-  memcpy(sf->data, src, size);
-  pthread_mutex_unlock(&sf->mutex);
-}
-
 void destroy_shared_frame(SharedFrame* sf){
   pthread_mutex_destroy(&sf->mutex);
   if(sf->data != NULL)
@@ -125,45 +168,21 @@ void destroy_shared_frame(SharedFrame* sf){
   sf->data = NULL;
 }
 
-static GstFlowReturn on_new_sample(GstAppSink *appsink, gpointer user_data)
-{
-  UserData* ud = (UserData*)user_data;
-  GstPipeline *pipeline = ud->pipeline;
-  assert(pipeline);
+void scale_frame(uint8_t *src, uint8_t *dest, size_t size){
+  GstVideoScaler* h_scale = gst_video_scaler_new(GST_VIDEO_RESAMPLER_METHOD_NEAREST, GST_VIDEO_SCALER_FLAG_NONE, 0, 1, 1, NULL);
+  GstVideoScaler* v_scale = gst_video_scaler_new(GST_VIDEO_RESAMPLER_METHOD_NEAREST, GST_VIDEO_SCALER_FLAG_NONE, 0, 1, 1, NULL);
 
-  GstSample* sample = gst_app_sink_pull_sample(appsink);
-  assert(sample);
-
-  GstBuffer* buffer = gst_sample_get_buffer(sample);
-  assert(buffer);
-
-  GstMapInfo map;
-  if (!gst_buffer_map(buffer, &map, GST_MAP_READ)) {
-      return GST_FLOW_ERROR;
-  }
-
-  gint64 pos_ns = GST_CLOCK_TIME_NONE;
-
-  if(gst_element_query_position(GST_ELEMENT(pipeline), 
-                                GST_FORMAT_TIME, 
-                                &pos_ns)){
-    volatile gint ts = (gint)ud->ts_ref;
-    g_atomic_int_set(&ts, pos_ns);
-  }
-
-  write_frame_data(ud->frame, map.data, map.size);
-  atomic_store_explicit(&ud->dirty, true, memory_order_relaxed);
-
-  gst_buffer_unmap(buffer, &map);
-  gst_sample_unref(sample);
-  
-  return GST_FLOW_OK;
+  gst_video_scaler_2d(h_scale, 
+  v_scale, 
+  GST_VIDEO_FORMAT_RGB, 
+  src, 1, 
+    dest, 1, 0, 0, 
+    WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
 
 void destroy_user_data(UserData* ud){
   g_signal_handlers_disconnect_by_func(ud->appsink, G_CALLBACK(on_new_sample), ud);
-
   free(ud);
 }
 
@@ -209,13 +228,13 @@ void update_raylib(RaylibVideo* stream, UserData* ud){
   pthread_mutex_unlock(&stream->frame_mut);
 }
 
-UserData* create_gstreamer_pipeline(RaylibVideo stream){  
+void create_gstreamer_pipeline(RaylibVideo* stream){  
   char* call_str = "filesrc location=%s ! decodebin name=decode ! queue ! videoconvert"
     "! video/x-raw,format=RGB,width=%i,height=%i,colorimetry=sRGB ! appsink name=appsink sync=true decode." 
     "! queue ! audioconvert !volume volume=0.1 ! audioresample ! autoaudiosink";
 
   char* pipeline_str = malloc((sizeof(char) * strlen(call_str)) + (sizeof(char) * 100));
-  sprintf(pipeline_str, call_str, stream.file_path, stream.width, stream.height);
+  sprintf(pipeline_str, call_str, stream->file_path, stream->width, stream->height);
   
 
   GError* err = NULL;
@@ -232,38 +251,15 @@ UserData* create_gstreamer_pipeline(RaylibVideo stream){
 
   gst_object_unref(appsink_ref);
 
-  UserData* ud = set_appsink_callback(stream, pipeline, appsink);
+  UserData* ud = set_appsink_callback(*stream, pipeline, appsink);
 
   // play video
   GstStateChangeReturn ret;
   ret = gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_PLAYING);
   assert(ret != GST_STATE_CHANGE_FAILURE);
 
-  // GstBus* bus = gst_element_get_bus(GST_ELEMENT(pipe));
-  // GstMessage* msg;
-  
-  // while(1){
-  //   msg = gst_bus_timed_pop_filtered(bus, GST_CLOCK_TIME_NONE, GST_MESSAGE_STATE_CHANGED | GST_MESSAGE_ERROR | GST_MESSAGE_EOS);
-  //   if(msg != NULL){
-  //     GError* err;
-  //     gchar* debug_info;
-  //     switch(GST_MESSAGE_TYPE (msg)){
-  //       case GST_MESSAGE_ERROR:
-  //         gst_message_parse_error(msg, &err, &debug_info);
-  //         g_printerr ("Error received from element %s: %s\n",
-  //             GST_OBJECT_NAME (msg->src), err->message);
-  //         g_printerr ("Debugging information: %s\n",
-  //             debug_info ? debug_info : "none");
-  //         g_clear_error (&err);
-  //         g_free (debug_info);
-  //       default:
-  //         g_printerr("Unexpected message received\n");
-  //     }
-
-  //   }
-  // }
-
-  return ud;
+  stream->thread_data = ud;
+  return;
 }
 
 void check_state(VideoState* state, RaylibVideo* str){
@@ -308,6 +304,20 @@ void check_state(VideoState* state, RaylibVideo* str){
   }
 }
 
+Rectangle get_video_box(RaylibVideo* str){
+  int faux_height = str->height;
+  int faux_width = str->width;
+  while(WINDOW_HEIGHT > faux_height && WINDOW_WIDTH > faux_width){
+    faux_height /= 2;
+    faux_width /= 2;
+  }
+  
+  Rectangle *new_res = malloc(sizeof(Rectangle));
+  *new_res = (Rectangle) {0, 0, faux_width, faux_height};
+
+  return *new_res;
+}
+
 void playback_driver(RaylibVideo* str){
   UserData* ud = str->thread_data;
   VideoState* state_machine = create_video_state();
@@ -322,9 +332,10 @@ void playback_driver(RaylibVideo* str){
   while(!WindowShouldClose()){
     update_raylib(str, ud);
     BeginDrawing();
-      ClearBackground(RAYWHITE);
+      ClearBackground(BLACK);
 
-      DrawTexture(str->frame_texture, 0, 0, WHITE);
+      // DrawTexture(str->frame_texture, 0, 0, WHITE);
+      DrawTexturePro(str->frame_texture, (Rectangle){0, 0, str->width, str->height}, get_video_box(str), (Vector2){0, 0}, 0.0, WHITE);
       check_state(state_machine, str);
       char c = GetCharPressed();
       if(state_machine->command_bar_open == false){
@@ -339,6 +350,7 @@ void playback_driver(RaylibVideo* str){
 }
 
 int main(int argc, char* argv[]){
+
   assert(argc > 1);
 
   gst_init(NULL, NULL);
@@ -346,20 +358,20 @@ int main(int argc, char* argv[]){
   char* media_path = argv[1];  
   RaylibVideo* stream = load_video(media_path);
 
+  SetConfigFlags(FLAG_WINDOW_RESIZABLE);
   InitWindow(stream->width, stream->height, "YouTube Looper");
-  
+  WINDOW_HEIGHT = GetScreenHeight();
+  WINDOW_WIDTH = GetScreenWidth();
   SetTargetFPS(60);
   SetExitKey(KEY_NULL);
 
   init_empty_texture(stream);
-  UserData* ud = create_gstreamer_pipeline(*stream);
-  stream->thread_data = ud;
+  create_gstreamer_pipeline(stream);
 
   // pthread_t* key_thread = set_keybinds();
   playback_driver(stream);
 
   // pthread_cancel(*key_thread);
   destroy_stream(&stream);
-  destroy_user_data(ud);
   printf("Done exiting\n");
 }
