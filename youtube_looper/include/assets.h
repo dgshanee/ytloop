@@ -33,5 +33,5 @@
 RaylibVideo* load_video(char* file_path);
 void init_empty_texture(RaylibVideo* stream);
 void create_gstreamer_pipeline(RaylibVideo* stream);
-void playback_driver(RaylibVideo* str);
+void playback_driver(RaylibVideo* str, VideoState* state_machine);
 void destroy_stream(RaylibVideo **pstr);
