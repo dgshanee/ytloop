@@ -14,7 +14,7 @@ void keybind_create(KeyBind** kb){
 
   (*kb)->vals[(unsigned char)':'] = open_command_prompt;
   (*kb)->vals[113] = cancel; // 'q' key
-  (*kb)->vals[(unsigned char)'p'] = toggle_playback;
+  // (*kb)->vals[(unsigned char)'p'] = toggle_playback;
   (*kb)->vals[(unsigned char)'k'] = toggle_fastforward;
   (*kb)->vals[(unsigned char)'j'] = toggle_rewind;
 }

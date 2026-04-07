@@ -15,8 +15,9 @@ void cancel(VideoState* arg){
   }
 }
 
-void toggle_playback(VideoState* arg){
-  arg->toggle_playback = true;
+void toggle_playback(void* arg){
+  VideoState* state = (VideoState*)arg;
+  state->toggle_playback = true;
 }
 
 void toggle_fastforward(VideoState* arg){

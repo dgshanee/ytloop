@@ -10,7 +10,7 @@ void open_command_prompt(VideoState* arg);
 
 void cancel(VideoState* arg);
 
-void toggle_playback(VideoState* arg);
+void toggle_playback(void* arg);
 
 void toggle_fastforward(VideoState* arg);
 void toggle_rewind(VideoState* arg);
