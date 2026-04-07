@@ -1,8 +1,8 @@
-#include "keybinds.h"
+#include "include/keybinds.h"
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "actions.h"
+#include "include/actions.h"
 
 void keybind_create(KeyBind** kb){
   *kb = malloc(sizeof(KeyBind));

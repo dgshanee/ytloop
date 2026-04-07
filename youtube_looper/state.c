@@ -1,5 +1,5 @@
 #ifndef STATE_H
-#include "state.h"
+#include "include/state.h"
 #endif
 
 VideoState* create_video_state(){

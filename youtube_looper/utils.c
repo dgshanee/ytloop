@@ -1,10 +1,10 @@
-#include "utils.h"
+#include "include/utils.h"
 #include "raylib.h"
 #include <string.h>
 #include <sys/syslimits.h>
 
 #ifndef VIDEO_DATA_H
-#include "video_data.h"
+#include "include/video_data.h"
 #endif
 
 void draw_command_prompt(){

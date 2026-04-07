@@ -9,16 +9,16 @@
 #include <inttypes.h>
 
 #ifndef VIDEO_DATA_H
-#include "video_data.h"
+#include "include/video_data.h"
 #endif
 
 #ifndef STATE_H
-#include "state.h"
+#include "include/state.h"
 #endif
 #ifndef UTILS_H
-#include "utils.h"
+#include "include/utils.h"
 #endif
-#include "keybinds.h"
+#include "include/keybinds.h"
 
 #include "raylib.h"
 #include <gst/gst.h>
