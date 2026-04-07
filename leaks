@@ -1,0 +1,79 @@
+INFO: Initializing raylib 5.5
+INFO: Platform backend: DESKTOP (GLFW)
+INFO: Supported raylib modules:
+INFO:     > rcore:..... loaded (mandatory)
+INFO:     > rlgl:...... loaded (mandatory)
+INFO:     > rshapes:... loaded (optional)
+INFO:     > rtextures:. loaded (optional)
+INFO:     > rtext:..... loaded (optional)
+INFO:     > rmodels:... loaded (optional)
+INFO:     > raudio:.... loaded (optional)
+INFO: DISPLAY: Device initialized successfully
+INFO:     > Display size: 1512 x 982
+INFO:     > Screen size:  1920 x 1080
+INFO:     > Render size:  1920 x 1080
+INFO:     > Viewport offsets: 0, 0
+INFO: GLAD: OpenGL extensions loaded successfully
+INFO: GL: Supported extensions count: 43
+INFO: GL: OpenGL device information:
+INFO:     > Vendor:   Apple
+INFO:     > Renderer: Apple M3 Pro
+INFO:     > Version:  4.1 Metal - 89.4
+INFO:     > GLSL:     4.10
+INFO: GL: VAO extension detected, VAO functions loaded successfully
+INFO: GL: NPOT textures extension detected, full NPOT textures supported
+INFO: GL: DXT compressed textures supported
+INFO: PLATFORM: DESKTOP (GLFW - Cocoa): Initialized successfully
+INFO: TEXTURE: [ID 1] Texture loaded successfully (1x1 | R8G8B8A8 | 1 mipmaps)
+INFO: TEXTURE: [ID 1] Default texture loaded successfully
+INFO: SHADER: [ID 1] Vertex shader compiled successfully
+INFO: SHADER: [ID 2] Fragment shader compiled successfully
+INFO: SHADER: [ID 3] Program shader loaded successfully
+INFO: SHADER: [ID 3] Default shader loaded successfully
+INFO: RLGL: Render batch vertex buffers loaded successfully in RAM (CPU)
+INFO: RLGL: Render batch vertex buffers loaded successfully in VRAM (GPU)
+INFO: RLGL: Default OpenGL state initialized successfully
+INFO: TEXTURE: [ID 2] Texture loaded successfully (128x128 | GRAY_ALPHA | 1 mipmaps)
+INFO: FONT: Default font loaded successfully (224 glyphs)
+INFO: SYSTEM: Working Directory: /Users/shaneciardelli/Programming/youtube_looper
+INFO: TIMER: Target time per frame: 16.667 milliseconds
+INFO: TEXTURE: [ID 3] Texture loaded successfully (1920x1080 | R8G8B8A8 | 1 mipmaps)
+config path: configs/yl.conf
+INFO: TEXTURE: [ID 2] Unloaded texture data from VRAM (GPU)
+INFO: SHADER: [ID 3] Default shader unloaded successfully
+INFO: TEXTURE: [ID 1] Default texture unloaded successfully
+INFO: Window closed successfully
+INFO: TEXTURE: [ID 3] Unloaded texture data from VRAM (GPU)
+Done exiting
+Process:         main [41146]
+Path:            /Users/USER/*/main
+Load Address:    0x1007c8000
+Identifier:      main
+Version:         0
+Code Type:       ARM64
+Platform:        macOS
+Parent Process:  leaks [41145]
+Target Type:     live task
+
+Date/Time:       2026-04-07 09:50:15.147 -0500
+Launch Time:     2026-04-07 09:50:12.576 -0500
+OS Version:      macOS 15.6.1 (24G90)
+Report Version:  7
+Analysis Tool:   /Applications/Xcode.app/Contents/Developer/usr/bin/leaks
+Analysis Tool Version:  Xcode 16.4 (16F6)
+
+Physical footprint:         224.2M
+Physical footprint (peak):  467.5M
+Idle exit:                  untracked
+----
+
+leaks Report Version: 3.0
+Process 41146: 85037 nodes malloced for 66844 KB
+Process 41146: 6 leaks for 6228176 total leaked bytes.
+
+Leak: 0x10656ca30  size=48  zone: MallocStackLoggingLiteZone_0x1035f8000   NSArray  ObjC  CoreFoundation   item count: 2
+Leak: 0x10c68fbb0  size=64  zone: MallocStackLoggingLiteZone_0x1035f8000   AXObserverCookie  CFType  HIServices
+Leak: 0x11c407720  size=80  zone: MallocStackLoggingLiteZone_0x1035f8000   malloc in set_appsink_callback  C  main
+Leak: 0x11d086e00  size=2048  zone: MallocStackLoggingLiteZone_0x1035f8000   malloc in keybind_create  C  main
+Leak: 0x11d86c8e0  size=16  zone: MallocStackLoggingLiteZone_0x1035f8000   malloc in create_video_state  C  main
+Leak: 0x120280000  size=6225920  zone: MallocStackLoggingLiteZone_0x1035f8000   malloc in init_frame_mutex  C  main

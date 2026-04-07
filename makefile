@@ -31,8 +31,16 @@ link:
 	clang $(BUILD_DIR)/$(FILE).o $(BUILD_DIR)/keybinds.o $(BUILD_DIR)/actions.o $(BUILD_DIR)/state.o $(BUILD_DIR)/utils.o \
 	-o $(BUILD_DIR)/$(FILE) $(LIBS)
 
+link_so: build
+	clang -shared -undefined dynamic_lookup $(BUILD_DIR)/$(FILE).o $(BUILD_DIR)/keybinds.o $(BUILD_DIR)/actions.o $(BUILD_DIR)/state.o $(BUILD_DIR)/utils.o \
+	-o $(BUILD_DIR)/$(FILE).so $(INCLUDE) $(LIBS)
+
 run: 
 	./$(BUILD_DIR)/$(FILE) $(ARGS)
+
+driver: link_so
+	. venv/bin/activate
+	python3 youtube_looper/driver/driver.py $(ARGS)
 
 test: build link
 	truncate -s 0 leaks # clear the file
