@@ -43,7 +43,7 @@ run:
 	./$(BUILD_DIR)/$(FILE) $(ARGS)
 
 driver: build link_so
-	. venv/bin/activate
+	# .venv/bin/activate
 	python3 youtube_looper/driver/driver.py $(ARGS)
 
 test: build link

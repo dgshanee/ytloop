@@ -13,7 +13,7 @@ arr[:] = sa
 
 shmem = lib.create_shared_memory()
 
-listener = start_keyboard_tracking(shmem, lib)
+listener = start_keyboard_tracking(shmem)
 
 lib.video_start(len(sys.argv), arr, shmem)
 listener.stop()
