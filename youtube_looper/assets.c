@@ -324,8 +324,8 @@ void playback_driver(RaylibVideo* str, VideoState* state_machine){
   // keybind_create(&kb);
 
   // commands
-  // char command[MAX_INPUT_CHARS + 1] = ":";
-  // int letter_count = 1;
+  char command[MAX_INPUT_CHARS + 1] = ":";
+  int letter_count = 1;
 
   Rectangle video_box = get_video_box(str);
 
@@ -343,12 +343,10 @@ void playback_driver(RaylibVideo* str, VideoState* state_machine){
 
       DrawTexturePro(str->frame_texture, (Rectangle){0, 0, str->width, str->height}, video_box, (Vector2){0, 0}, 0.0, WHITE);
       check_state(state_machine, str);
-      // char c = GetCharPressed();
-      // if(state_machine->command_bar_open == false){
-      //   keybind_get(kb, c, state_machine);
-      // }else{
-      //   handle_write(state_machine, command, &letter_count, c);
-      // }
+      if(state_machine->command_bar_open == true){
+        char c = GetCharPressed();
+        handle_write(state_machine, command, &letter_count, c);
+      }
     EndDrawing();
   }
 

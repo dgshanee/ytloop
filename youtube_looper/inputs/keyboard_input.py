@@ -7,6 +7,7 @@ actions = ctypes.CDLL("./build/actions.so")
 actions.toggle_playback.argtypes = [ctypes.c_void_p]
 actions.toggle_fastforward.argtypes = [ctypes.c_void_p]
 actions.toggle_rewind.argtypes = [ctypes.c_void_p]
+actions.open_command_prompt.argtypes = [ctypes.c_void_p]
 
 d = None
 
