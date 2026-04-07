@@ -14,6 +14,6 @@ typedef struct KeyBind{
   ActionHandler vals[UCHAR_MAX];
 }KeyBind;
 
-void keybind_create(KeyBind** kb);
+// void keybind_create(KeyBind** kb);
 
-void keybind_get(KeyBind* kb, char key, VideoState* state);
+// void keybind_get(KeyBind* kb, char key, VideoState* state);

@@ -320,8 +320,8 @@ Rectangle get_video_box(RaylibVideo* str){
 void playback_driver(RaylibVideo* str, VideoState* state_machine){
   UserData* ud = str->thread_data;
 
-  KeyBind *kb;
-  keybind_create(&kb);
+  // KeyBind *kb;
+  // keybind_create(&kb);
 
   // commands
   // char command[MAX_INPUT_CHARS + 1] = ":";
