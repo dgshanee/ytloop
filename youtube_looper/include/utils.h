@@ -7,4 +7,5 @@ void draw_command_prompt();
 
 void draw_pause();
 
-void handle_write(VideoState* state_machine, char* command, int* letter_count, char key);
+void handle_write(VideoState *state_machine, char *command, int *letter_count,
+                  char key);
