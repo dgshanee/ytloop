@@ -9,11 +9,13 @@ GuiManager *create_gui_manager() {
   AssetTicker *rewind = malloc(sizeof(AssetTicker));
   AssetTicker *pause = malloc(sizeof(AssetTicker));
 
-  // {is_active, ticker_dependent, ticker_val, max_duration, draw_function}
+  // {toggle, is_active, ticker_dependent, ticker_val, max_duration,
+  // draw_function}
   *fast_forward =
-      (AssetTicker){false, true, 0, FFW_MAX_DURATION, draw_fast_forward};
-  *rewind = (AssetTicker){false, true, 0, RW_MAX_DURATION};
-  *pause = (AssetTicker){false, false, 0, PAUSED_MAX_DURATION, draw_pause};
+      (AssetTicker){false, false, true, 0, FFW_MAX_DURATION, draw_fast_forward};
+  *rewind = (AssetTicker){false, false, true, 0, RW_MAX_DURATION};
+  *pause =
+      (AssetTicker){false, false, false, 0, PAUSED_MAX_DURATION, draw_pause};
 
   res->fast_forward = fast_forward;
   res->rewind = rewind;
@@ -26,9 +28,23 @@ GuiManager *create_gui_manager() {
 void destroy_gui_manager(GuiManager *s) { free(s); }
 
 void manage_asset(AssetTicker *ticker, void **packet) {
+  if (ticker->toggle) {
+    if (ticker->ticker_dependent) {
+      ticker->is_active = true;
+    } else {
+      ticker->is_active = !(ticker->is_active);
+    }
+    ticker->ticker_val = 0;
+    ticker->toggle = false;
+  }
+
   if (ticker->is_active) {
     // draw asset -- if packet is not NULL, pass packet through
-    ticker->draw_function(*packet);
+    if (packet == NULL) {
+      ticker->draw_function(NULL);
+    } else {
+      ticker->draw_function(*packet);
+    }
 
     if (ticker->ticker_dependent) {
       if (ticker->ticker_val > ticker->max_duration) {

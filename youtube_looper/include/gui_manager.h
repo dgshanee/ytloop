@@ -6,13 +6,14 @@
 #include <stdlib.h>
 
 // durations of assets in frames
-#define FFW_MAX_DURATION 100
+#define FFW_MAX_DURATION 60
 #define RW_MAX_DURATION 6
 #define PAUSED_MAX_DURATION 0
 
 typedef void (*DrawFunc)(void *packet);
 
 typedef struct asset_ticker {
+  bool toggle;
   bool is_active;
   bool ticker_dependent;
   int ticker_val;
