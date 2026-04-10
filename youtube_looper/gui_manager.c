@@ -53,7 +53,6 @@ void manage_asset(AssetTicker *ticker, void **packet) {
         // *packet = NULL;
         free(*packet);
         *packet = malloc(sizeof(void));
-        printf("DONE\n\n");
       }
       ticker->ticker_val++;
     } else {

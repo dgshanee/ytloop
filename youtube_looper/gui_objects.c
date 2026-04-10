@@ -4,7 +4,6 @@
 
 void draw_fast_forward(void *packet) {
   int *jump = (int *)packet;
-  printf("%i\n", *jump);
 
   char str[32]; // plenty of space
   snprintf(str, sizeof(str), "+%i\n", *jump);
@@ -13,7 +12,6 @@ void draw_fast_forward(void *packet) {
 }
 
 void draw_pause(void *packet) {
-  printf("here\n");
   Color transparent_grey = {0, 0, 0, 128};
 
   int width = GetScreenWidth();
