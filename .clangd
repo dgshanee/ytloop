@@ -1,2 +1,0 @@
-CompileFlags:
-	Add: [-Wall, -I/opt/homebrew/include, -L/opt/homebrew/libs, -I/Library/Frameworks/Gstreamer.framework/Headers]
