@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdlib.h>
 
 // durations of assets in frames
 #define FFW_MAX_DURATION 6
@@ -26,7 +27,7 @@ typedef struct gui_manager {
   AssetTicker *pause;
 } GuiManager;
 
-GuiManager *create_gui_manager(bool ticker_dependent);
+GuiManager *create_gui_manager();
 
 void destroy_gui_manager(GuiManager *);
 

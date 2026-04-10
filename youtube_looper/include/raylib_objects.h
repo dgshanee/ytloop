@@ -1,3 +1,4 @@
+#include "gui_manager.h"
 #include <raylib.h>
 
 #ifndef RAYLIB_OBJECTS
@@ -6,7 +7,7 @@
 /*
 FAST FORWARD
 */
-void draw_fast_forward(Vector2 pos);
+void draw_fast_forward(GuiManager gm, void *packet);
 
 // returns the symbol as a scalar vector
 Vector2 *get_fast_forward_symbol();
@@ -17,10 +18,15 @@ char *get_fast_forward_text();
 /*
  * REWIND
  */
-void draw_rewind(Vector2 pos);
+void draw_rewind(GuiManager gm, void *packet);
 
 Vector2 *get_rewind_symbol();
 
 char *get_rewind_text();
 
+/*
+ * PAUSE
+ */
+
+void draw_pause(GuiManager gm, void *packet);
 #endif

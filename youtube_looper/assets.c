@@ -1,3 +1,4 @@
+#include "include/gui_manager.h"
 #include <assert.h>
 #include <inttypes.h>
 #include <pthread.h>
@@ -18,6 +19,7 @@
 #ifndef UTILS_H
 #include "include/utils.h"
 #endif
+#include "include/gui_manager.h"
 #include "include/keybinds.h"
 
 #include "raylib.h"
@@ -262,11 +264,12 @@ void create_gstreamer_pipeline(RaylibVideo *stream) {
   return;
 }
 
-void check_state(VideoState *state, RaylibVideo *str) {
+void check_state(VideoState *state, RaylibVideo *str, GuiManager *gui) {
   if (state->command_bar_open) {
     draw_command_prompt();
   }
 
+  // PAUSING
   if (state->toggle_playback) {
     GstState pause_or_play = str->paused ? GST_STATE_PLAYING : GST_STATE_PAUSED;
 
@@ -274,9 +277,6 @@ void check_state(VideoState *state, RaylibVideo *str) {
         GST_ELEMENT(str->thread_data->pipeline), pause_or_play);
     if (r == GST_STATE_CHANGE_FAILURE) {
       printf("Error toggling playback\n");
-    }
-    if (r == GST_STATE_CHANGE_ASYNC) {
-      printf("Async\n");
     }
 
     GstClockTime timeout = 5 * GST_SECOND;
@@ -304,10 +304,10 @@ void check_state(VideoState *state, RaylibVideo *str) {
     state->toggle_fastforward = false;
     state->toggle_rewind = false;
   }
-
-  if (str->paused) {
-    draw_pause();
-  }
+  //
+  // if (str->paused) {
+  //   draw_pause();
+  // }
 }
 
 // handles window resizing
@@ -326,15 +326,12 @@ Rectangle get_video_box(RaylibVideo *str) {
 void playback_driver(RaylibVideo *str, VideoState *state_machine) {
   UserData *ud = str->thread_data;
 
-  // KeyBind *kb;
-  // keybind_create(&kb);
-
-  // commands
   char command[MAX_INPUT_CHARS + 1] = ":";
   int letter_count = 1;
 
   Rectangle video_box = get_video_box(str);
 
+  GuiManager *gui_manager = create_gui_manager();
   while (!WindowShouldClose()) {
     update_raylib(str, ud);
 
@@ -350,7 +347,8 @@ void playback_driver(RaylibVideo *str, VideoState *state_machine) {
     DrawTexturePro(str->frame_texture,
                    (Rectangle){0, 0, str->width, str->height}, video_box,
                    (Vector2){0, 0}, 0.0, WHITE);
-    check_state(state_machine, str);
+    check_state(state_machine, str, gui_manager);
+    // manage_gui(gui_manager);
     if (state_machine->command_bar_open == true) {
       char c = GetCharPressed();
       handle_write(state_machine, command, &letter_count, c);

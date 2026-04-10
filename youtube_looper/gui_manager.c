@@ -1,6 +1,6 @@
 #include "include/gui_manager.h"
 
-GuiManager *create_gui_manager(bool ticker_dependent) {
+GuiManager *create_gui_manager() {
   GuiManager *res = malloc(sizeof(GuiManager));
 
   AssetTicker *fast_forward = malloc(sizeof(AssetTicker));
@@ -9,7 +9,7 @@ GuiManager *create_gui_manager(bool ticker_dependent) {
 
   *fast_forward = (AssetTicker){false, true, 0, FFW_MAX_DURATION};
   *rewind = (AssetTicker){false, true, 0, RW_MAX_DURATION};
-  *pause = (AssetTicker){false, true, 0, PAUSED_MAX_DURATION};
+  *pause = (AssetTicker){false, false, 0, PAUSED_MAX_DURATION};
 
   return res;
 }
@@ -32,7 +32,7 @@ void manage_asset(AssetTicker *ticker, void *packet) {
 }
 
 void manage_gui(GuiManager *gui_manager) {
-  manage_asset(gui_manager->fast_forward, NULL);
-  manage_asset(gui_manager->rewind, NULL);
+  // manage_asset(gui_manager->fast_forward, NULL);
+  // manage_asset(gui_manager->rewind, NULL);
   manage_asset(gui_manager->pause, NULL);
 }

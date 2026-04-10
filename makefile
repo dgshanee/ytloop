@@ -26,13 +26,14 @@ build:
 	clang -c $(MAIN_DIR)/state.c -o $(BUILD_DIR)/state.o $(INCLUDE)
 	clang -c $(MAIN_DIR)/utils.c -o $(BUILD_DIR)/utils.o $(INCLUDE)
 	clang -c $(MAIN_DIR)/assets.c -o $(BUILD_DIR)/assets.o $(INCLUDE)
+	clang -c $(MAIN_DIR)/gui_manager.c -o $(BUILD_DIR)/gui_manager.o $(INCLUDE)
 
 link:
 	clang $(BUILD_DIR)/$(FILE).o  $(BUILD_DIR)/assets.o $(BUILD_DIR)/actions.o $(BUILD_DIR)/state.o $(BUILD_DIR)/utils.o \
 	-o $(BUILD_DIR)/$(FILE) $(LIBS)
 
 link_so: build
-	clang -shared -undefined dynamic_lookup $(BUILD_DIR)/$(FILE).o $(BUILD_DIR)/assets.o $(BUILD_DIR)/state.o $(BUILD_DIR)/utils.o \
+	clang -shared -undefined dynamic_lookup $(BUILD_DIR)/$(FILE).o $(BUILD_DIR)/gui_manager.o $(BUILD_DIR)/assets.o $(BUILD_DIR)/state.o $(BUILD_DIR)/utils.o \
 	-o $(BUILD_DIR)/$(FILE).so $(INCLUDE) $(LIBS)
 
 	clang -shared -undefined dynamic_lookup $(MAIN_DIR)/actions.c \
