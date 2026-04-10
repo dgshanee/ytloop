@@ -1,8 +1,8 @@
 #include "gui_manager.h"
 #include <raylib.h>
 
-#ifndef RAYLIB_OBJECTS
-#define RAYLIB_OBJECTS
+#ifndef GUI_OBJECTS
+#define GUI_OBJECTS
 
 /*
 FAST FORWARD
@@ -28,5 +28,5 @@ char *get_rewind_text();
  * PAUSE
  */
 
-void draw_pause(GuiManager gm, void *packet);
+void draw_pause(void *packet);
 #endif

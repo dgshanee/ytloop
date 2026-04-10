@@ -284,6 +284,7 @@ void check_state(VideoState *state, RaylibVideo *str, GuiManager *gui) {
                               NULL, timeout);
     state->toggle_playback = false;
     str->paused = !(str->paused);
+    gui->pause->is_active = str->paused;
   }
 
   if (state->toggle_fastforward || state->toggle_rewind) {
@@ -348,7 +349,7 @@ void playback_driver(RaylibVideo *str, VideoState *state_machine) {
                    (Rectangle){0, 0, str->width, str->height}, video_box,
                    (Vector2){0, 0}, 0.0, WHITE);
     check_state(state_machine, str, gui_manager);
-    // manage_gui(gui_manager);
+    manage_gui(gui_manager);
     if (state_machine->command_bar_open == true) {
       char c = GetCharPressed();
       handle_write(state_machine, command, &letter_count, c);
