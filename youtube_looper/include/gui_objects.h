@@ -7,7 +7,7 @@
 /*
 FAST FORWARD
 */
-void draw_fast_forward(GuiManager gm, void *packet);
+void draw_fast_forward(void *packet);
 
 // returns the symbol as a scalar vector
 Vector2 *get_fast_forward_symbol();

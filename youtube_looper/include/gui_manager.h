@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 // durations of assets in frames
-#define FFW_MAX_DURATION 6
+#define FFW_MAX_DURATION 100
 #define RW_MAX_DURATION 6
 #define PAUSED_MAX_DURATION 0
 
@@ -25,6 +25,8 @@ typedef struct gui_manager {
   AssetTicker *fast_forward;
   AssetTicker *rewind;
   AssetTicker *pause;
+
+  void *packet;
 } GuiManager;
 
 GuiManager *create_gui_manager();

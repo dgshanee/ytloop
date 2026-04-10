@@ -289,9 +289,20 @@ void check_state(VideoState *state, RaylibVideo *str, GuiManager *gui) {
 
   if (state->toggle_fastforward || state->toggle_rewind) {
     GstClockTime jump = 5 * GST_SECOND;
+    gui->fast_forward->is_active = true;
+    int *packet_jump = (int *)gui->packet;
+    if (packet_jump == NULL) {
+      packet_jump = 0;
+    }
 
     if (state->toggle_rewind)
       jump *= -1;
+
+    if (state->toggle_fastforward)
+      *packet_jump += 5;
+    else {
+      *packet_jump -= 5;
+    }
 
     gint64 pos;
     gst_element_query_position(GST_ELEMENT(str->thread_data->pipeline),
