@@ -1,4 +1,5 @@
 from inputs.parse_configs import parse_config_map
+from inputs.parse_configs import NON_CHAR_KEY_MAP
 
 from pynput import keyboard
 import ctypes
@@ -11,11 +12,14 @@ actions.toggle_playback.argtypes = [ctypes.c_void_p]
 actions.toggle_fastforward.argtypes = [ctypes.c_void_p]
 actions.toggle_rewind.argtypes = [ctypes.c_void_p]
 actions.open_command_prompt.argtypes = [ctypes.c_void_p]
+actions.cancel.argtypes = [ctypes.c_void_p]
 
 config_map = None
 
 def start_keyboard_tracking(shmem):
     def on_press(key):
+        if key in NON_CHAR_KEY_MAP:
+            key.char = NON_CHAR_KEY_MAP[key]
         try:
             if not config_map:
                 return

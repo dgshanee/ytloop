@@ -19,3 +19,7 @@ void draw_pause(void *packet) {
 
   DrawRectangle(0, 0, width, height, transparent_grey);
 }
+
+void draw_command_prompt(void *packet) {
+  DrawRectangle(0, GetScreenHeight() - 20, GetScreenWidth(), 100, BLACK);
+}

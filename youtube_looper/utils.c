@@ -8,10 +8,6 @@
 #include "include/video_data.h"
 #endif
 
-void draw_command_prompt() {
-  DrawRectangle(0, GetScreenHeight() - 20, GetScreenWidth(), 100, BLACK);
-}
-
 void handle_write(VideoState *state, char *command, int *letter_count,
                   char key) {
   while (key > 0) {

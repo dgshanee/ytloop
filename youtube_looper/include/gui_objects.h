@@ -29,4 +29,6 @@ char *get_rewind_text();
  */
 
 void draw_pause(void *packet);
+
+void draw_command_prompt(void *packet);
 #endif

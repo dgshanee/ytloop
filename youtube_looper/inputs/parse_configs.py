@@ -1,3 +1,6 @@
+from pynput import keyboard
+
+NON_CHAR_KEY_MAP = {keyboard.Key.esc : "esc"}
 
 def parse_config_map():
     d = {}

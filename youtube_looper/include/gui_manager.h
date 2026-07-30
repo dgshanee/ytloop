@@ -26,6 +26,7 @@ typedef struct gui_manager {
   AssetTicker *fast_forward;
   AssetTicker *rewind;
   AssetTicker *pause;
+  AssetTicker *cmd_prompt;
 
   void *packet;
 } GuiManager;

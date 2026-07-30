@@ -8,6 +8,7 @@ GuiManager *create_gui_manager() {
   AssetTicker *fast_forward = malloc(sizeof(AssetTicker));
   AssetTicker *rewind = malloc(sizeof(AssetTicker));
   AssetTicker *pause = malloc(sizeof(AssetTicker));
+  AssetTicker *cmd_prompt = malloc(sizeof(AssetTicker));
 
   // {toggle, is_active, ticker_dependent, ticker_val, max_duration,
   // draw_function}
@@ -16,10 +17,13 @@ GuiManager *create_gui_manager() {
   *rewind = (AssetTicker){false, false, true, 0, RW_MAX_DURATION};
   *pause =
       (AssetTicker){false, false, false, 0, PAUSED_MAX_DURATION, draw_pause};
+  *cmd_prompt = (AssetTicker){
+      false, false, false, 0, PAUSED_MAX_DURATION, draw_command_prompt};
 
   res->fast_forward = fast_forward;
   res->rewind = rewind;
   res->pause = pause;
+  res->cmd_prompt = cmd_prompt;
   res->packet = malloc(sizeof(void));
 
   return res;
@@ -63,6 +67,5 @@ void manage_asset(AssetTicker *ticker, void **packet) {
 
 void manage_gui(GuiManager *gui_manager) {
   manage_asset(gui_manager->fast_forward, &gui_manager->packet);
-  // manage_asset(gui_manager->rewind, NULL);
   manage_asset(gui_manager->pause, NULL);
 }
