@@ -12,13 +12,14 @@ LIBS = -F/Library/Frameworks \
         -Wl,-rpath,/opt/homebrew/lib \
         -lraylib \
         -lavcodec -lavformat -lavutil -lswscale
+
 # Load .env if present and export its variables to recipes
 ifneq (,$(wildcard .env))
   include .env
   export $(shell sed -n 's/^\([A-Za-z_][A-Za-z0-9_]*\)=.*/\1/p' .env)
 endif
 
-default: build link run
+default: build link_so run
 
 build:
 	clang -c $(MAIN_DIR)/driver/$(FILE).c -o $(BUILD_DIR)/$(FILE).o $(INCLUDE)
@@ -29,12 +30,9 @@ build:
 	clang -c $(MAIN_DIR)/gui_manager.c -o $(BUILD_DIR)/gui_manager.o $(INCLUDE)
 	clang -c $(MAIN_DIR)/gui_objects.c -o $(BUILD_DIR)/gui_objects.o $(INCLUDE)
 
-link:
-	clang $(BUILD_DIR)/$(FILE).o  $(BUILD_DIR)/assets.o $(BUILD_DIR)/actions.o $(BUILD_DIR)/state.o $(BUILD_DIR)/utils.o \
-	-o $(BUILD_DIR)/$(FILE) $(LIBS)
-
 link_so: build
-	clang -shared -undefined dynamic_lookup $(BUILD_DIR)/$(FILE).o $(BUILD_DIR)/gui_manager.o $(BUILD_DIR)/gui_objects.o $(BUILD_DIR)/assets.o $(BUILD_DIR)/state.o $(BUILD_DIR)/utils.o \
+	clang -shared -undefined dynamic_lookup $(BUILD_DIR)/$(FILE).o $(BUILD_DIR)/gui_manager.o $(BUILD_DIR)/gui_objects.o $(BUILD_DIR)/assets.o \
+	$(BUILD_DIR)/state.o $(BUILD_DIR)/utils.o \
 	-o $(BUILD_DIR)/$(FILE).so $(INCLUDE) $(LIBS)
 
 	clang -shared -undefined dynamic_lookup $(MAIN_DIR)/actions.c \
@@ -48,6 +46,7 @@ driver: build link_so
 	# .venv/bin/activate
 	python3 youtube_looper/driver/driver.py $(ARGS)
 
-test: build link
+# broken
+test: build link_so
 	truncate -s 0 leaks # clear the file
-	leaks -list -nostacks -nosources --atExit -- ./$(FILE) $(ARGS) >> leaks
+	leaks -list -nostacks -nosources --atExit -- ./run.sh $(ARGS) >> leaks

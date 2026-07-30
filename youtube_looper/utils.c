@@ -1,6 +1,7 @@
 #include "include/utils.h"
 #include "raylib.h"
 #include <string.h>
+#include <sys/signal.h>
 #include <sys/syslimits.h>
 
 #ifndef VIDEO_DATA_H
@@ -32,11 +33,6 @@ void handle_write(VideoState *state, char *command, int *letter_count,
 
   if (IsKeyPressed(KEY_ENTER)) {
     // handle command enter
-
-    if (strcmp(command, ":q") == 0) {
-      CloseWindow();
-    }
-
     state->command_bar_open = false;
     for (int i = 1; i < *letter_count; i++) {
       command[i] = '\0';

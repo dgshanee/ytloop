@@ -1,7 +1,9 @@
 import ctypes
 import sys
+import threading
 sys.path.insert(1, "youtube_looper")
 from inputs.keyboard_input import start_keyboard_tracking
+from inputs.commands import wait_for_command
 
 lib = ctypes.CDLL("./build/driver.so")
 lib.video_start.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p), ctypes.c_void_p]
