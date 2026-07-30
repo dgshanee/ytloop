@@ -5,5 +5,4 @@ def parse_config_map():
         for line in f:
             (val, key) = line.split()
             d[key] = val
-    print(d)
     return d

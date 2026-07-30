@@ -2,8 +2,8 @@
 #include <sys/mman.h>
 
 typedef struct {
-  VideoState *vs;
-  RaylibVideo *rv;
+  VideoState *video_state;
+  RaylibVideo *raylib_video;
 } SharedMemory;
 
 void *create_shared_memory() {
