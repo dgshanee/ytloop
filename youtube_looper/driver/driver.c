@@ -1,4 +1,6 @@
 #include "../include/assets.h"
+#include <Python.h>
+#include <signal.h>
 #include <sys/mman.h>
 
 typedef struct {
@@ -17,7 +19,7 @@ void *create_shared_memory() {
   return shmem;
 }
 
-void video_start(int argc, char *argv[], void *shmem) {
+void video_start(int argc, char *argv[], void *shmem, PyObject *event) {
   assert(argc > 1);
   assert(shmem != NULL);
 
@@ -37,7 +39,11 @@ void video_start(int argc, char *argv[], void *shmem) {
   init_empty_texture(stream);
   create_gstreamer_pipeline(stream);
 
-  playback_driver(stream, state);
+  if (event == NULL) {
+    printf("Invalid event emitter\n");
+    return;
+  }
+  playback_driver(stream, state, event);
 
   destroy_stream(&stream);
   printf("Done exiting\n");

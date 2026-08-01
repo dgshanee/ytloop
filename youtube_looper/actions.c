@@ -1,4 +1,5 @@
 #include "include/actions.h"
+#include <stdint.h>
 #ifndef STATE_H
 #include "include/state.h"
 #endif
@@ -18,8 +19,8 @@ void cancel(void *arg) {
 }
 
 void toggle_playback(void *arg) {
-  printf("toggling playback in C");
   VideoState *state = (VideoState *)arg;
+
   state->toggle_playback = true;
 }
 

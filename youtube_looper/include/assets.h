@@ -21,6 +21,7 @@
 #include "keybinds.h"
 
 #include "raylib.h"
+#include <Python.h>
 #include <gst/app/gstappsink.h>
 #include <gst/gst.h>
 #include <gst/video/video.h>
@@ -33,5 +34,6 @@
 RaylibVideo *load_video(char *file_path);
 void init_empty_texture(RaylibVideo *stream);
 void create_gstreamer_pipeline(RaylibVideo *stream);
-void playback_driver(RaylibVideo *str, VideoState *state_machine);
+void playback_driver(RaylibVideo *str, VideoState *state_machine,
+                     PyObject *event_emitter);
 void destroy_stream(RaylibVideo **pstr);

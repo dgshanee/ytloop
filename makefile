@@ -4,14 +4,16 @@ FILE ?= driver
 
 ARGS ?= "assets/mirror_tune.mp4"
 
-INCLUDE = -I/Library/Frameworks/GStreamer.framework/Headers -I/opt/homebrew/include
+INCLUDE = -I/Library/Frameworks/GStreamer.framework/Headers -I/opt/homebrew/include \
+					$(shell python3-config --include)
 LIBS = -F/Library/Frameworks \
         -framework GStreamer \
         -Wl,-rpath,/Library/Frameworks \
         -L/opt/homebrew/lib \
         -Wl,-rpath,/opt/homebrew/lib \
         -lraylib \
-        -lavcodec -lavformat -lavutil -lswscale
+        -lavcodec -lavformat -lavutil -lswscale \
+				$(shell python3-config --libs)
 
 # Load .env if present and export its variables to recipes
 ifneq (,$(wildcard .env))

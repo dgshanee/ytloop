@@ -29,6 +29,8 @@
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 
+#include <Python.h>
+
 int WINDOW_HEIGHT;
 int WINDOW_WIDTH;
 
@@ -336,7 +338,8 @@ Rectangle get_video_box(RaylibVideo *str) {
   return new_res;
 }
 
-void playback_driver(RaylibVideo *str, VideoState *state_machine) {
+void playback_driver(RaylibVideo *str, VideoState *state_machine,
+                     PyObject *event_emitter) {
   UserData *ud = str->thread_data;
 
   char command[MAX_INPUT_CHARS + 1] = ":";
@@ -364,7 +367,7 @@ void playback_driver(RaylibVideo *str, VideoState *state_machine) {
     manage_gui(gui_manager);
     if (state_machine->command_bar_open == true) {
       char c = GetCharPressed();
-      handle_write(state_machine, command, &letter_count, c);
+      handle_write(state_machine, command, &letter_count, c, event_emitter);
     }
     EndDrawing();
   }
