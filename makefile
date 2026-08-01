@@ -25,8 +25,8 @@ default: build link_so run
 
 build:
 	clang -c $(MAIN_DIR)/driver/$(FILE).c -o $(BUILD_DIR)/$(FILE).o $(INCLUDE)
-	clang -c $(MAIN_DIR)/actions.c -o $(BUILD_DIR)/actions.o $(INCLUDE)
-	clang -c $(MAIN_DIR)/state.c -o $(BUILD_DIR)/state.o $(INCLUDE)
+	clang -c $(MAIN_DIR)/commands/actions.c -o $(BUILD_DIR)/actions.o $(INCLUDE)
+	clang -c $(MAIN_DIR)/commands/state.c -o $(BUILD_DIR)/state.o $(INCLUDE)
 	clang -c $(MAIN_DIR)/utils.c -o $(BUILD_DIR)/utils.o $(INCLUDE)
 	clang -c $(MAIN_DIR)/assets.c -o $(BUILD_DIR)/assets.o $(INCLUDE)
 	clang -c $(MAIN_DIR)/gui_manager.c -o $(BUILD_DIR)/gui_manager.o $(INCLUDE)
@@ -37,7 +37,7 @@ link_so: build
 	$(BUILD_DIR)/state.o $(BUILD_DIR)/utils.o \
 	-o $(BUILD_DIR)/$(FILE).so $(INCLUDE) $(LIBS)
 
-	clang -shared -undefined dynamic_lookup $(MAIN_DIR)/actions.c \
+	clang -shared -undefined dynamic_lookup $(MAIN_DIR)/commands/actions.c \
 	-o $(BUILD_DIR)/actions.so $(INCLUDE) $(LIBS)
 
 

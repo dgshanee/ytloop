@@ -69,14 +69,3 @@ void handle_write(VideoState *state, char *command, int *letter_count, char key,
   // Draw
   DrawText(command, 5, GetScreenHeight() - 15, 2, WHITE);
 }
-
-// void draw_pause() {
-//   Color transparent_grey = {0, 0, 0, 128};
-//
-//   int width = GetScreenWidth();
-//   int height = GetScreenHeight();
-//
-//   DrawRectangle(0, 0, width, height, transparent_grey);
-//
-//   // pause button
-// }
