@@ -10,6 +10,9 @@
 
 #define MAX_INPUT_CHARS 16
 
+/*
+ *  -----DATA STRUCTS-----
+ * */
 typedef struct {
   uint8_t *data;
   pthread_mutex_t mutex;
@@ -45,5 +48,17 @@ typedef struct MasterData {
   RaylibVideo *video_stream;
   UserData *user_data;
 } MasterData;
+
+/*
+ *  -----GSTREAMER PIPELINE-----
+ * */
+
+void create_gstreamer_pipeline(RaylibVideo *stream);
+UserData *set_appsink_callback(RaylibVideo stream, GstPipeline *pipeline,
+                               GstAppSink *appsink);
+void init_frame_mutex(SharedFrame *sf, int64_t video_height,
+                      int64_t video_width);
+GstFlowReturn on_new_sample(GstAppSink *appsink, gpointer user_data);
+void write_frame_data(SharedFrame *sf, uint8_t *src, size_t size);
 
 #endif
