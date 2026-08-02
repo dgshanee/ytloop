@@ -2,9 +2,7 @@
 
 #include <Python.h>
 
-#ifndef STATE_H
-#include "state.h"
-#endif
+#include "commands.h"
 void draw_command_prompt();
 
 // void draw_pause();

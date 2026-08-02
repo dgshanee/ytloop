@@ -7,10 +7,6 @@
 #include <sys/syslimits.h>
 #include <unistd.h>
 
-#ifndef VIDEO_DATA_H
-#include "include/video_data.h"
-#endif
-
 int get_python_set(PyObject *event) {
   PyGILState_STATE gstate = PyGILState_Ensure();
   printf("%p\n", event);

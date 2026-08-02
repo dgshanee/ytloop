@@ -1,3 +1,5 @@
+#ifndef PIPELINE_H
+#define PIPELINE_H
 #include "raylib.h"
 #include <gst/app/gstappsink.h>
 #include <gst/gst.h>
@@ -6,7 +8,6 @@
 #include <stdatomic.h>
 #include <sys/_pthread/_pthread_mutex_t.h>
 
-#define VIDEO_DATA_H
 #define MAX_INPUT_CHARS 16
 
 typedef struct {
@@ -44,3 +45,5 @@ typedef struct MasterData {
   RaylibVideo *video_stream;
   UserData *user_data;
 } MasterData;
+
+#endif

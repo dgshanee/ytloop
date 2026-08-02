@@ -1,7 +1,7 @@
-#include "../include/actions.h"
+#include "../include/commands.h"
 #include <stdint.h>
 #ifndef STATE_H
-#include "include/state.h"
+#include "../include/commands.h"
 #endif
 #include <stdio.h>
 

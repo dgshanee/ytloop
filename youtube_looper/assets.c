@@ -10,17 +10,16 @@
 #include <time.h>
 
 #ifndef VIDEO_DATA_H
-#include "include/video_data.h"
+#include "include/pipeline.h"
 #endif
 
 #ifndef STATE_H
-#include "include/state.h"
+#include "include/commands.h"
 #endif
 #ifndef UTILS_H
 #include "include/utils.h"
 #endif
 #include "include/gui_manager.h"
-#include "include/keybinds.h"
 
 #include "raylib.h"
 #include <gst/app/gstappsink.h>

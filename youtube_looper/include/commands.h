@@ -1,14 +1,11 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
-#include "state.h"
-#include "video_data.h"
+#include "pipeline.h"
 
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#endif
 
 typedef struct VideoState {
   bool command_bar_open;
@@ -36,3 +33,5 @@ void cancel(void *arg);
 void toggle_playback(void *arg);
 void toggle_fastforward(void *arg);
 void toggle_rewind(void *arg);
+
+#endif

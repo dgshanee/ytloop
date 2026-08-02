@@ -8,17 +8,12 @@
 #include <sys/_pthread/_pthread_mutex_t.h>
 #include <time.h>
 
-#ifndef VIDEO_DATA_H
-#include "video_data.h"
-#endif
+#include "pipeline.h"
 
-#ifndef STATE_H
-#include "state.h"
-#endif
+#include "commands.h"
 #ifndef UTILS_H
 #include "utils.h"
 #endif
-#include "keybinds.h"
 
 #include "raylib.h"
 #include <Python.h>
