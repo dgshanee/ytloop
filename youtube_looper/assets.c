@@ -38,10 +38,10 @@ void destroy_stream(RaylibVideo **pstr) {
   UnloadTexture(str->frame_texture);
   pthread_mutex_destroy(&str->frame_mut);
 
-  UserData *ud = str->thread_data;
-  g_signal_handlers_disconnect_by_func(ud->appsink, G_CALLBACK(on_new_sample),
-                                       ud);
-  free(ud);
+  PipelineContext *pipeline = str->thread_data;
+  g_signal_handlers_disconnect_by_func(pipeline->appsink,
+                                       G_CALLBACK(on_new_sample), pipeline);
+  free(pipeline);
 
   if (pstr != NULL)
     free(str);
@@ -134,13 +134,13 @@ void scale_frame(uint8_t *src, uint8_t *dest, size_t size) {
                       0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
-void destroy_user_data(UserData *ud) {
+void destroy_user_data(PipelineContext *ud) {
   g_signal_handlers_disconnect_by_func(ud->appsink, G_CALLBACK(on_new_sample),
                                        ud);
   free(ud);
 }
 
-void update_raylib(RaylibVideo *stream, UserData *ud) {
+void update_raylib(RaylibVideo *stream, PipelineContext *ud) {
   atomic_bool latest_hash =
       atomic_load_explicit(&ud->dirty, memory_order_relaxed);
 
@@ -227,7 +227,7 @@ Rectangle get_video_box(RaylibVideo *str) {
 
 void playback_driver(RaylibVideo *str, VideoState *state_machine,
                      PyObject *event_emitter) {
-  UserData *ud = str->thread_data;
+  PipelineContext *ud = str->thread_data;
 
   char command[MAX_INPUT_CHARS + 1] = ":";
   int letter_count = 1;

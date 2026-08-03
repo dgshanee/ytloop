@@ -31,7 +31,7 @@ build:
 	clang -c $(MAIN_DIR)/assets.c -o $(BUILD_DIR)/assets.o $(INCLUDE)
 	clang -c $(MAIN_DIR)/gui_manager.c -o $(BUILD_DIR)/gui_manager.o $(INCLUDE)
 	clang -c $(MAIN_DIR)/gui_objects.c -o $(BUILD_DIR)/gui_objects.o $(INCLUDE)
-	clang -c $(MAIN_DIR)/gst_pipeline.c -o $(BUILD_DIR)/pipeline.o $(INCLUDE)
+	clang -c $(MAIN_DIR)/pipeline/gst_pipeline.c -o $(BUILD_DIR)/pipeline.o $(INCLUDE)
 
 link_so: build
 	clang -shared -undefined dynamic_lookup $(BUILD_DIR)/$(FILE).o $(BUILD_DIR)/gui_manager.o $(BUILD_DIR)/gui_objects.o $(BUILD_DIR)/assets.o \
